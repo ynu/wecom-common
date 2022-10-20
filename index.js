@@ -82,9 +82,10 @@
  
  
  module.exports = {
-   getToken,
-   code2session,
-   WecomError,
+  qyHost,
+  getToken,
+  code2session,
+  WecomError,
  };
  
  
