@@ -17,10 +17,9 @@
   },
   "homepage": "https://github.com/ynu/wecom-common#readme",
   "dependencies": {
-    "@wecom/crypto": "^1.0.1",
     "debug": "^4.3.4",
     "memory-cache": "^0.2.0",
-    "node-fetch": "^3.2.10"
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "assert": "^2.0.0",

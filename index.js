@@ -2,7 +2,6 @@
  * 企业微信API-通用
  */
  const fetch = require('node-fetch');
- const { decrypt, getSignature } = require('@wecom/crypto');
  const warn = require('debug')('wecom-common:warn');
  const error = require('debug')('wecom-common:error');
  const info = require('debug')('wecom-common:info');
@@ -18,8 +17,8 @@
  
  class WecomError extends Error {
   constructor (code, message) {
+    super(message);
     this.code = code;
-    this.message = message;
   }
  }
 
