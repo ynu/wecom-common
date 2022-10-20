@@ -1,0 +1,29 @@
+{
+  "name": "wecom-common",
+  "version": "1.0.0",
+  "description": "企业微信基础SDK，包括获取token等操作",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ynu/wecom-common.git"
+  },
+  "author": "na57",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ynu/wecom-common/issues"
+  },
+  "homepage": "https://github.com/ynu/wecom-common#readme",
+  "dependencies": {
+    "@wecom/crypto": "^1.0.1",
+    "debug": "^4.3.4",
+    "memory-cache": "^0.2.0",
+    "node-fetch": "^3.2.10"
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "mocha": "^10.1.0"
+  }
+}
