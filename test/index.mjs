@@ -1,6 +1,5 @@
-const { doesNotMatch } = require('assert');
-const assert = require('assert');
-const { WecomError, getToken } = require('../index');
+import { ok } from 'assert';
+import { WecomError, getToken } from '../index.mjs';
 
 describe('wecom-common 测试', () => {
   describe('getToken 获取access_token', () => {
@@ -16,7 +15,7 @@ describe('wecom-common 测试', () => {
     });
     it('通过环境变量输入参数，正常获取token', async () => {
       const token = await getToken();
-      assert.ok(token);
+      ok(token);
     });
   });
 });

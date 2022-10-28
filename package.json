@@ -1,8 +1,8 @@
 {
   "name": "wecom-common",
-  "version": "1.1.0",
+  "version": "2.1.2",
   "description": "企业微信基础SDK，包括获取token等操作",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "mocha"
   },
@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/ynu/wecom-common#readme",
   "dependencies": {
+    "@wecom/crypto": "^1.0.1",
+    "axios": "^1.1.3",
     "debug": "^4.3.4",
-    "memory-cache": "^0.2.0",
-    "node-fetch": "^2.6.7"
+    "memory-cache": "^0.2.0"
   },
   "devDependencies": {
     "assert": "^2.0.0",
