@@ -3,13 +3,14 @@
  */
 import axios from 'axios';
 import Debug from 'debug';
-import cache from 'memory-cache';
+import * as cache from 'memory-cache';
 import { decrypt } from '@wecom/crypto';
+import process = require('node:process');
 const warn = Debug('wecom-common:warn');
 const error = Debug('wecom-common:error');
 const info = Debug('wecom-common:info');
 const debug = Debug('wecom-common:debug');
- 
+//  console.log(ax);
  const {
    CORP_ID, // 企业微信ID
    SECRET, // 管理组secret
@@ -19,21 +20,26 @@ const debug = Debug('wecom-common:debug');
  
  
  export class WecomError extends Error {
-  constructor (code, message) {
+  constructor (public code:number, message: string) {
     super(message);
     this.code = code;
   }
  }
 
+ export type Options = {
+  corpId?: string,
+  secret?: string,
+}
+
  /**
   * 获取access_token。
-  * @param {String}} secret 用于获取TOKEN的secret，默认为环境变量中的SECRET
+  * @param {String} secret 用于获取TOKEN的secret，默认为环境变量中的SECRET
   * @returns access_token
   * @seealso https://developer.work.weixin.qq.com/document/10013#第三步：获取access_token
   */
- export const getToken = async (options = {}) => {
-   const secret = options.secret || SECRET;
-   const corpId = options.corpId || CORP_ID;
+ export const getToken = async (options: Options): Promise<string> => {
+   const secret = options?.secret || SECRET;
+   const corpId = options?.corpId || CORP_ID;
  
    if (!corpId) {
     throw new WecomError(-1, '必须的参数corpId或环境变量CORP_ID(企业ID)未设置.')
@@ -49,7 +55,7 @@ const debug = Debug('wecom-common:debug');
      debug(`从cache获取token(secret:${secret})`);
      return token;
    } else {
-    const { data } = await axios.get(`${qyHost}/gettoken?corpid=${corpId}&corpsecret=${secret}`);
+    const { data } = await axios.get<any>(`${qyHost}/gettoken?corpid=${corpId}&corpsecret=${secret}`);
      if (!data.errcode) {
        debug(`获取token成功::${data.access_token}`);
        cache.put(tokenCacheKey, data.access_token, (data.expires_in - 20)*1000);
@@ -66,8 +72,8 @@ const debug = Debug('wecom-common:debug');
   * @param {String} code 临时登录凭证
   * @see https://developers.weixin.qq.com/miniprogram/dev/dev_wxwork/dev-doc/qywx-api/login/code2session.html
   */
- export const code2session = async (code) => {
-   const access_token = await getToken();
+ export const code2session = async (code: string, options:Options) => {
+   const access_token = await getToken(options);
    if (!access_token) {
      error('获取access_token失败');
      return {};
@@ -91,12 +97,12 @@ const debug = Debug('wecom-common:debug');
  *  - @param {String} encoding_aes_key 消息接收服务器EncodingAESKey，默认由ENCODING_AES_KEY获取
  */
 export const verifyUrl = (
-  echostr,
-  options = {},
+  echostr: string,
+  options:any,
 ) => {
-  const encoding_aes_key = options.encoding_aes_key || ENCODING_AES_KEY;
+  const encoding_aes_key = options?.encoding_aes_key || ENCODING_AES_KEY;
   const corpId = options.corpId || CORP_ID;
-  const success = options.success || ((message) => {
+  const success = options.success || ((message:any) => {
     return {
       isBase64Encoded: false,
       statusCode: 200,

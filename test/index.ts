@@ -1,5 +1,16 @@
 import { ok } from 'assert';
-import { WecomError, getToken } from '../index.mjs';
+import { WecomError, getToken } from '../index';
+import { describe, it } from 'node:test';
+
+const {
+  CORP_ID,
+  SECRET,
+} = process.env;
+
+const options = {
+  corpId: CORP_ID || '',
+  secret: SECRET || '',
+};
 
 describe('wecom-common 测试', () => {
   describe('getToken 获取access_token', () => {
@@ -14,7 +25,8 @@ describe('wecom-common 测试', () => {
       }
     });
     it('通过环境变量输入参数，正常获取token', async () => {
-      const token = await getToken();
+      const token = await getToken(options);
+      console.log('**', token)
       ok(token);
     });
   });
