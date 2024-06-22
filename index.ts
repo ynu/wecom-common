@@ -26,7 +26,7 @@ const debug = Debug('wecom-common:debug');
   }
  }
 
- export type Options = {
+ export type GetToken = {
   corpId?: string,
   secret?: string,
 }
@@ -37,7 +37,7 @@ const debug = Debug('wecom-common:debug');
   * @returns access_token
   * @seealso https://developer.work.weixin.qq.com/document/10013#第三步：获取access_token
   */
- export const getToken = async (options: Options): Promise<string> => {
+ export const getToken = async (options: GetToken): Promise<string> => {
    const secret = options?.secret || SECRET;
    const corpId = options?.corpId || CORP_ID;
  
@@ -72,7 +72,7 @@ const debug = Debug('wecom-common:debug');
   * @param {String} code 临时登录凭证
   * @see https://developers.weixin.qq.com/miniprogram/dev/dev_wxwork/dev-doc/qywx-api/login/code2session.html
   */
- export const code2session = async (code: string, options:Options) => {
+ export const code2session = async (code: string, options:GetToken) => {
    const access_token = await getToken(options);
    if (!access_token) {
      error('获取access_token失败');
