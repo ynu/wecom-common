@@ -21,7 +21,7 @@ const debug = Debug('wecom-common:debug');
  
  export const post = axios.post<WecomResponse>;
  export const get = axios.get<WecomResponse>;
- 
+
  export class WecomError extends Error {
   constructor (public code:number, message: string) {
     super(message);
@@ -58,7 +58,7 @@ const debug = Debug('wecom-common:debug');
      debug(`从cache获取token(secret:${secret})`);
      return token;
    } else {
-    const { data } = await axios.get<any>(`${qyHost}/gettoken?corpid=${corpId}&corpsecret=${secret}`);
+    const { data } = await get(`${qyHost}/gettoken?corpid=${corpId}&corpsecret=${secret}`);
      if (!data.errcode) {
        debug(`获取token成功::${data.access_token}`);
        cache.put(tokenCacheKey, data.access_token, (data.expires_in - 20)*1000);
@@ -83,7 +83,7 @@ const debug = Debug('wecom-common:debug');
    }
    info(`access_token:${access_token}`);
    
-   const res = await axios.get(`${qyHost}/miniprogram/jscode2session?access_token=${access_token}&js_code=${code}&grant_type=authorization_code`);
+   const res = await get(`${qyHost}/miniprogram/jscode2session?access_token=${access_token}&js_code=${code}&grant_type=authorization_code`);
    const result = res.data;
    if (!result.errcode) return result;
  
