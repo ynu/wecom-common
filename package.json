@@ -1,6 +1,6 @@
 {
   "name": "wecom-common",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "企业微信基础SDK，包括获取token等操作",
   "main": "dist/index.js",
   "scripts": {
