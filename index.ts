@@ -6,6 +6,7 @@ import Debug from 'debug';
 import * as cache from 'memory-cache';
 import { decrypt } from '@wecom/crypto';
 import process = require('node:process');
+import { WecomResponse } from './types';
 const warn = Debug('wecom-common:warn');
 const error = Debug('wecom-common:error');
 const info = Debug('wecom-common:info');
@@ -18,6 +19,8 @@ const debug = Debug('wecom-common:debug');
  } = process.env;
  export const qyHost = 'https://qyapi.weixin.qq.com/cgi-bin';
  
+ export const post = axios.post<WecomResponse>;
+ export const get = axios.get<WecomResponse>;
  
  export class WecomError extends Error {
   constructor (public code:number, message: string) {
@@ -130,3 +133,5 @@ export const verifyUrl = (
     return fail();
   }
 };
+
+export * from './types';
