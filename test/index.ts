@@ -1,5 +1,5 @@
 import { ok } from 'assert';
-import { WecomError, getToken } from '../index';
+import {WecomError, getToken, getuserinfo, getuserdetail} from '../index';
 import { describe, it } from 'node:test';
 
 const {
@@ -20,6 +20,28 @@ describe('wecom-common 测试', () => {
           corpId: 'xxx',
           secret: 'xxx',
         });
+      } catch (err) {
+        if (!(err instanceof WecomError)) throw err;
+      }
+    });
+    it('获取访问用户身份', async () => {
+      try {
+        const userinfo = await getuserinfo("",{
+          corpId: '',
+          secret: '',
+        });
+        console.log(userinfo)
+      } catch (err) {
+        if (!(err instanceof WecomError)) throw err;
+      }
+    });
+    it('获取访问用户敏感信息', async () => {
+      try {
+        const userinfo = await getuserdetail("",{
+          corpId: '',
+          secret: '',
+        });
+        console.log(userinfo)
       } catch (err) {
         if (!(err instanceof WecomError)) throw err;
       }

@@ -68,14 +68,34 @@ const debug = Debug('wecom-common:debug');
      throw new WecomError(data.errcode, data.errmsg);
    }
  };
- 
- 
- /**
-  * 获取session和userid
-  * @param {String} code 临时登录凭证
-  * @see https://developers.weixin.qq.com/miniprogram/dev/dev_wxwork/dev-doc/qywx-api/login/code2session.html
-  */
- export const code2session = async (code: string, options:GetToken) => {
+
+/**
+ * 获取session和userid
+ * @param {String} code 临时登录凭证
+ * @see https://developers.weixin.qq.com/miniprogram/dev/dev_wxwork/dev-doc/qywx-api/login/code2session.html
+ */
+export const code2session = async (code: string, options:GetToken) => {
+    const access_token = await getToken(options);
+    if (!access_token) {
+        error('获取access_token失败');
+        return {};
+    }
+    info(`access_token:${access_token}`);
+
+    const res = await get(`${qyHost}/miniprogram/jscode2session?access_token=${access_token}&js_code=${code}&grant_type=authorization_code`);
+    const result = res.data;
+    if (!result.errcode) return result;
+
+    error('code2session出错:', result);
+    return {};
+}
+
+/**
+ * 获取访问用户身份
+ * @param {String} code 通过成员授权获取到的code，最大为512字节。每次成员授权带上的code将不一样，code只能使用一次，5分钟未被使用自动过期
+ * @see https://developer.work.weixin.qq.com/document/path/91023
+ */
+ export const getuserinfo = async (code: string, options:GetToken) => {
    const access_token = await getToken(options);
    if (!access_token) {
      error('获取access_token失败');
@@ -83,13 +103,31 @@ const debug = Debug('wecom-common:debug');
    }
    info(`access_token:${access_token}`);
    
-   const res = await get(`${qyHost}/miniprogram/jscode2session?access_token=${access_token}&js_code=${code}&grant_type=authorization_code`);
+   const res = await get(`${qyHost}/auth/getuserinfo?access_token=${access_token}&code=${code}`);
    const result = res.data;
    if (!result.errcode) return result;
- 
-   error('code2session出错:', result);
+   error('getuserinfo出错:', result);
    return {};
  }
+
+/**
+ * 获取访问用户敏感信息
+ * @param {String} user_ticket 成员票据
+ * @see https://developer.work.weixin.qq.com/document/path/91023
+ */
+export const getuserdetail = async (user_ticket: string, options:GetToken) => {
+    const access_token = await getToken(options);
+    if (!access_token) {
+        error('获取access_token失败');
+        return {};
+    }
+    info(`access_token:${access_token}`);
+    const res = await post(`${qyHost}/auth/getuserdetail?access_token=${access_token}`, {user_ticket: user_ticket});
+    const result = res.data;
+    if (!result.errcode) return result;
+    error('getuserdetail出错:', result);
+    return {};
+}
  
 /**
  * 接收消息与事件-验证URL有效性
