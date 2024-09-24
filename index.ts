@@ -34,6 +34,35 @@ const debug = Debug('wecom-common:debug');
   secret?: string,
 }
 
+/**
+ * 构造授权链接所需参数
+ */
+export type AuthorizeLink = {
+    /**
+     * 企业的CorpID
+     */
+    corpId: string,
+    /**
+     * 授权后重定向的回调链接地址
+     */
+    redirect_uri: string,
+    /**
+     * 应用授权作用域。
+     * snsapi_base：静默授权，可获取成员的基础信息（UserId）；
+     * snsapi_privateinfo：手动授权，可获取成员的详细信息，包含头像、二维码等敏感信息（此时要求成员必须在应用可见范围内）。
+     */
+    scope: string,
+    /**
+     * 返回类型，此时固定为：code
+     */
+    state?: string,
+    /**
+     * 应用agentid，建议填上该参数（对于第三方应用和代开发自建应用，在填写该参数的情况下或者在工作台、聊天工具栏、应用会话内发起oauth2请求的场景中，会触发接口许可的自动激活）。
+     * snsapi_privateinfo时必填否则报错；
+     */
+    agentid: string
+}
+
  /**
   * 获取access_token。
   * @param {String} secret 用于获取TOKEN的secret，默认为环境变量中的SECRET
@@ -127,6 +156,22 @@ export const getuserdetail = async (user_ticket: string, options:GetToken) => {
     if (!result.errcode) return result;
     error('getuserdetail出错:', result);
     return {};
+}
+
+/**
+ * 构造网页授权链接
+ * @param {String} user_ticket 成员票据
+ * @see https://developer.work.weixin.qq.com/document/path/91022
+ */
+export const structureAuthorizeLink = async (authorizeLink: AuthorizeLink) => {
+    authorizeLink.redirect_uri = encodeURIComponent(authorizeLink.redirect_uri);
+    if (!authorizeLink.state) {
+        authorizeLink.state = "";
+    }
+    const authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize';
+    return {
+        link: `${authUrl}?appid=${authorizeLink.corpId}&redirect_uri=${authorizeLink.redirect_uri}&response_type=code&scope=${authorizeLink.scope}&agentid=${authorizeLink.agentid}&state=${authorizeLink.state}#wechat_redirect`
+    }
 }
  
 /**

@@ -1,5 +1,5 @@
 import { ok } from 'assert';
-import {WecomError, getToken, getuserinfo, getuserdetail} from '../index';
+import {WecomError, getToken, getuserinfo, getuserdetail, structureAuthorizeLink} from '../index';
 import { describe, it } from 'node:test';
 
 const {
@@ -42,6 +42,21 @@ describe('wecom-common 测试', () => {
           secret: '',
         });
         console.log(userinfo)
+      } catch (err) {
+        if (!(err instanceof WecomError)) throw err;
+      }
+    });
+    it('构造网页授权链接', async () => {
+      try {
+        const authorizeLink = {
+          corpId: '',
+          redirect_uri: '',
+          scope: '',
+          state: '',
+          agentid: '',
+        }
+        const link = await structureAuthorizeLink(authorizeLink);
+        console.log(link)
       } catch (err) {
         if (!(err instanceof WecomError)) throw err;
       }
